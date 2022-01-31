@@ -1,0 +1,45 @@
+import PySimpleGUI as sg
+import requests
+
+class CEP:
+    def __init__(self):
+        sg.theme('Reddit')
+        layout = [
+            [sg.Text('Bem vindo ao buscador de CEP')],
+            [sg.Text('Digite seu cep: '), sg.Input(key='entrada')],
+            [sg.Button('Ver')],
+            [sg.Output(size=(50,6))]
+        ]
+
+        self.janela = sg.Window('Buscador cep', layout)
+
+    def pegar_cep(self, cep):
+        link = f'https://cep.awesomeapi.com.br/json/{cep}'
+        requisicao = requests.get(link).json()      
+        try:
+            print(f'Você mora na rua: {requisicao["address"]}\n'
+          f'No bairro: {requisicao["district"]}\n'
+          f'Na cidade: {requisicao["city"]}\n'
+          f'Com o DDD ({requisicao["ddd"]})\n')
+        except:
+            print('Digite um CEP valido!\n')
+        
+
+    def iniciar(self):
+        while True:
+            
+            events, value = self.janela.read()
+            if events == sg.WIN_CLOSED:
+                break
+            elif events == 'Ver':
+                cep = value['entrada']
+                self.pegar_cep(cep)
+
+        
+cep = CEP()
+cep.iniciar()
+
+
+
+
+
